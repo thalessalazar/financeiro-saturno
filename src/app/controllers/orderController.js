@@ -2,11 +2,6 @@ const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const router = express.Router();
 
-/*
-const Project = require('../models/Projects');
-const Task = require('../models/Tasks');
-const User = require('../models/User');
-*/
 
 router.use(authMiddleware);
 
@@ -18,7 +13,7 @@ router.use(authMiddleware);
 //     });
 // });
 
-//List projects
+//List Order
 router.get('/', async (req, res, next) => {
     try {
         const projects = await Project.find().populate(['user', 'tasks']);

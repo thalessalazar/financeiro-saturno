@@ -9,10 +9,6 @@ const CustommerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    orders: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Order'
-    }],
     createdAt: {
         type: Date,
         dafault: Date.now()
