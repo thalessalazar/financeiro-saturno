@@ -8,32 +8,29 @@ const Product = require('../models/Product');
 
 router.use(authMiddleware);
 
-// router.get('/', (req, res) => {
-//     console.log('user: ', req.userid);
-//     return res.status(200).send({
-//         ok: true,
-//         userid: req.userid
-//     });
-// });
-
 //List Order
 router.get('/', async (req, res, next) => {
     try {
         const order = await Order.find().populate('products');
         return res.status(200).send({ order });
     } catch (err) {
-        return res.status(400).send({err: err});
+        return res.status(400).send({ err: err });
     }
 });
 
 //list Projects Details
 router.get('/:id', async (req, res, next) => {
-    const id = req.params.id;
     try {
-        const project = await Project.findById(id).populate(['user', 'tasks']);
-        return res.status(200).send({ project });
+        const id = req.params.id;
+        const order = await Order.findById(id);
+
+        if (!order) {
+            return res.status(400).send({ err: 'Order not found' });
+        }
+
+        return res.status(200).send({ order: order });
     } catch (err) {
-        return res.status(400).send({ err: "Error loading projects" })
+        return res.status(401).send({ err: err });
     }
 });
 
@@ -69,20 +66,23 @@ router.post('/', async (req, res, next) => {
 router.put('/update/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
-        const { title, description, tasks } = req.body;
-        console.log('id');
-        const project = await Project.findByIdAndUpdate(id, {
-            title,
-            description
+        const { custommer, hasBeenDelivered, products, totalOrder, month } = req.body;
+
+        const order = await Order.findByIdAndUpdate(id, {
+            custommer,
+            hasBeenDelivered,
+            products,
+            totalOrder,
+            month
         }, { new: true });
 
-        project.tasks = [];
-        await Task.remove({ project: project._id });
+        order.products = [];
+        await Order.remove({ order: order._id });
 
-        await Promise.all(tasks.map(async task => {
-            const projectTask = new Task({ ...task, project: project._id });
-            await projectTask.save();
-            project.tasks.push(projectTask);
+        await Promise.all(products.map(async product => {
+            const orderProduct = new Task({ ...product, order: order._id });
+            await orderProduct.save();
+            order.products.push(orderProduct);
         }));
 
         await project.save();
@@ -99,10 +99,10 @@ router.put('/update/:id', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
     const id = req.params.id;
     try {
-        await Project.findByIdAndRemove(id);
-        return res.status(200).send({ msg: "Project delected" });
+        await Order.findByIdAndRemove(id);
+        return res.status(200).send({ msg: "Order delected" });
     } catch (err) {
-        return res.status(400).send({ err: "Error on delete project" })
+        return res.status(400).send({ err: "Error on delete order" });
     }
 });
 
