@@ -6,10 +6,9 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Order: {
+    order: {
         type: mongoose.Types.ObjectId,
-        ref: 'Custommer',
-        require: true
+        ref: 'Custommer'
     },
     createdAt: {
         type: Date,

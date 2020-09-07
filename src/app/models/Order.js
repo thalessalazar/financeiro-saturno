@@ -1,7 +1,7 @@
 const mongoose = require('../../database/database');
 
 const OrderSchema = new mongoose.Schema({
-    Custommer: {
+    custommer: {
         type: mongoose.Types.ObjectId,
         ref: 'Custommer',
         require: true
@@ -19,9 +19,8 @@ const OrderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product'
     }],
-    totalOder: {
+    totalOrder: {
         type: Number,
-        required: true
     },
     month: {
         type: Number,
