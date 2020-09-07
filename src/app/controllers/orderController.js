@@ -19,10 +19,10 @@ router.use(authMiddleware);
 //List Order
 router.get('/', async (req, res, next) => {
     try {
-        const projects = await Project.find().populate(['user', 'tasks']);
-        return res.status(200).send({ projects });
+        const order = await Order.find().populate('products');
+        return res.status(200).send({ order });
     } catch (err) {
-        return res.status(400).send({ err: "Error loading projects" })
+        return res.status(400).send({err: err});
     }
 });
 
