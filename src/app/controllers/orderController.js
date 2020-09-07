@@ -106,4 +106,14 @@ router.delete('/:id', async (req, res, next) => {
     }
 });
 
+router.delete('/product/:id', (req, res, next) => {
+    try {
+        const id = req.params.id;
+        await Product.findByIdAndRemove(id);
+        return res.status(200).send({ msg: "Product Removed" });
+    } catch (err) {
+        return res.status(200).send({ err: err });
+    }
+});
+
 module.exports = app => app.use('/order', router);
